@@ -4,15 +4,15 @@ import java.util.ArrayList;
 
 public interface AdminProfileDao {
 
-	void addProducts(AdminProfile[] p) throws Exception;
+	void addProducts(AdminProfile[] p);
 
-	void userDetails(AdminProfile[] u) throws Exception;
+	void userDetails(AdminProfile[] u);
 
-	void createOrder(ArrayList<UserProfile> o, String user,String pay) throws Exception;
+	void createOrder(ArrayList<UserProfile> o, String user,String pay);
 
-	void updateProducts(int value, int id) throws Exception;
+	void updateProducts(int value, int id);
 
-	ArrayList<AdminProfile> viewProducts() throws Exception;
+	ArrayList<AdminProfile> viewProducts();
 
-	int bill(ArrayList<UserProfile> ob) throws Exception;
+	int bill(ArrayList<UserProfile> ob);
 }

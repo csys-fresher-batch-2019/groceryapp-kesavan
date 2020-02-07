@@ -4,39 +4,38 @@ import java.util.ArrayList;
 
 public interface UserProfileDao {
 
-	int CreateAccount(String user, String pass, String address, long mobile, String mail) throws Exception;
+	int CreateAccount(String user, String pass, String address, long mobile, String mail);
 
-	boolean Login(String username, String password) throws Exception;
+	boolean Login(String username, String password);
 
-	void Forgotpassword(String mailid, String password) throws Exception;
+	void Forgotpassword(String mailid, String password);
 
-	ArrayList<UserDisplay> ViewProducts(String a) throws Exception;
+	ArrayList<UserDisplay> ViewProducts(String a);
 
-	ArrayList<UserProfile> PlaceOrder(ArrayList<?> o, String username,String payment) throws Exception;
+	ArrayList<UserProfile> PlaceOrder(ArrayList<?> o, String username, String payment);
 
-	ArrayList<ordersummary> ViewOrder(int userid) throws Exception;
+	ArrayList<ordersummary> ViewOrder(int userid);
 
-	void Review(int id, int rating) throws Exception;
+	void Review(int id, int rating);
 
-	String Cancelorder(int orderid) throws Exception;
+	String Cancelorder(int orderid);
 
-	String Trackorder(int orderid) throws Exception;
-	
-	int Trackordercancel(int orderid) throws Exception;
+	String Trackorder(int orderid);
 
+	int Trackordercancel(int orderid);
 
-	boolean checkusername(String username) throws Exception;
+	boolean checkusername(String username);
 
-	boolean checkmobileno(long mobile) throws Exception;
+	boolean checkmobileno(long mobile);
 
-	boolean checkproduct(int product) throws Exception;
+	boolean checkproduct(int product);
 
-	boolean checkstock(int noofitems, int product) throws Exception;
+	boolean checkstock(int noofitems, int product);
 
-	int checkuserid(String user) throws Exception;
+	int checkuserid(String user);
 
-	boolean checkorderid(int orderid) throws Exception;
+	boolean checkorderid(int orderid);
 
-	boolean checkmail(String mail) throws Exception;
+	boolean checkmail(String mail);
 
 }
