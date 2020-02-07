@@ -61,16 +61,16 @@ public class UserProfileDaoImpl implements UserProfileDao {
 			try (ResultSet rs = stmt.executeQuery(sql);) {
 				while (rs.next()) {
 					UserDisplay ap = new UserDisplay();
-					ap.productName = rs.getString("product_name");
-					ap.productId = rs.getInt("product_Id");
-					ap.manufacturer = rs.getString("manufacturer");
-					ap.quantity = rs.getFloat("quantity");
-					ap.unit = rs.getString("unit");
-					ap.priceRS = rs.getInt("price_rs");
-					ap.stock = rs.getInt("stock");
-					ap.status = rs.getString("status");
-					ap.review = rs.getString("review");
-					ap.rating = rs.getInt("rating");
+					ap.setProductName(rs.getString("product_name"));
+					ap.setProductId(rs.getInt("product_Id"));
+					ap.setManufacturer(rs.getString("manufacturer"));
+					ap.setQuantity(rs.getFloat("quantity"));
+					ap.setUnit(rs.getString("unit"));
+					ap.setPriceRS(rs.getInt("price_rs"));
+					ap.setStock(rs.getInt("stock"));
+					ap.setStatus(rs.getString("status"));
+					ap.setReview(rs.getString("review"));
+					ap.setRating(rs.getInt("rating"));
 					products.add(ap);
 				}
 			}
@@ -105,16 +105,16 @@ public class UserProfileDaoImpl implements UserProfileDao {
 			try (ResultSet rs = stmt.executeQuery(sql);) {
 				while (rs.next()) {
 					ordersummary os = new ordersummary();
-					os.orderid = rs.getInt("order_id");
-					os.productname = rs.getString("product_name");
-					os.manufacturer = rs.getString("manufacturer");
-					os.noofitems = rs.getInt("no_of_items");
-					os.totalamount = rs.getInt("total_amount");
-					os.orderdate = rs.getDate("order_date");
-					os.deliverydate = rs.getDate("delivery_date");
-					os.deliveryaddress = rs.getString("delivery_address");
-					os.orderstatus = rs.getString("order_status");
-					os.payment = rs.getString("payment");
+					os.setOrderid(rs.getInt("order_id"));
+					os.setProductname(rs.getString("product_name"));
+					os.setManufacturer(rs.getString("manufacturer"));
+					os.setNoofitems(rs.getInt("no_of_items"));
+					os.setTotalamount(rs.getInt("total_amount"));
+					os.setOrderdate(rs.getDate("order_date"));
+					os.setDeliverydate(rs.getDate("delivery_date"));
+					os.setDeliveryaddress(rs.getString("delivery_address"));
+					os.setOrderstatus(rs.getString("order_status"));
+					os.setPayment(rs.getString("payment"));
 					productsview.add(os);
 				}
 			}

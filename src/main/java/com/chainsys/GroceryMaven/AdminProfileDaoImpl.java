@@ -20,8 +20,9 @@ public class AdminProfileDaoImpl implements AdminProfileDao {
 			try {
 				Jdbcpst.preparestmt(
 						"insert into products(product_name,product_id,manufacturer,quantity,unit,price_rs,stock)values('"
-								+ obj.productName + "'," + obj.productId + ",'" + obj.manufacturer + "'," + obj.quantity
-								+ ",'" + obj.unit + "'," + obj.priceRS + "," + obj.stock + ")");
+								+ obj.getProductName() + "'," + obj.getProductId() + ",'" + obj.getManufacturer() + "',"
+								+ obj.getQuantity() + ",'" + obj.getUnit() + "'," + obj.getPriceRS() + ","
+								+ obj.getStock() + ")");
 			} catch (Exception e) {
 				LOGGER.debug(Errormessage.INVALID_COLUMN_INDEX);
 			}
@@ -38,7 +39,7 @@ public class AdminProfileDaoImpl implements AdminProfileDao {
 				LOGGER.debug(Errormessage.INVALID_COLUMN_INDEX);
 			}
 			try {
-				Jdbcpst.preparestmt("insert into proreview(product_id) values(" + obj.productId + ")");
+				Jdbcpst.preparestmt("insert into proreview(product_id) values(" + obj.getProductId() + ")");
 
 			} catch (Exception e) {
 				LOGGER.debug(Errormessage.INVALID_COLUMN_INDEX);
@@ -52,8 +53,8 @@ public class AdminProfileDaoImpl implements AdminProfileDao {
 			try {
 				Jdbcpst.preparestmt(
 						"insert into usersdata(user_id,password,phone_no,user_name,delivery_address,mail_id)  values(  "
-								+ "se_name.nextval,'" + obj.password + "'," + obj.phoneno + ",'" + obj.username + "','"
-								+ obj.deliveryaddress + "','" + obj.mail + "')");
+								+ "se_name.nextval,'" + obj.getPassword() + "'," + obj.getPhoneno() + ",'"
+								+ obj.getUsername() + "','" + obj.getDeliveryaddress() + "','" + obj.getMail() + "')");
 			} catch (Exception e) {
 				LOGGER.debug(Errormessage.INVALID_COLUMN_INDEX);
 			}
@@ -75,7 +76,7 @@ public class AdminProfileDaoImpl implements AdminProfileDao {
 				for (UserProfile obj1 : ob) {
 					String sql = "select product_id,price_rs from products where product_id= ?";
 					try (PreparedStatement pst = con.prepareStatement(sql);) {
-						pst.setInt(1, obj1.productid);
+						pst.setInt(1, obj1.getProductid());
 						try (ResultSet rs1 = pst.executeQuery();) {
 							int productId = 0;
 							int price = 0;
@@ -83,17 +84,17 @@ public class AdminProfileDaoImpl implements AdminProfileDao {
 								productId = rs1.getInt("product_id");
 								price = rs1.getInt("price_rs");
 							}
-							int totalBill = price * obj1.noOfItems;
+							int totalBill = price * obj1.getNoOfItems();
 							String payment = type;
 							stmt.executeUpdate(
 									"insert into orderdata(user_id,order_id,product_id,order_date,delivery_date,no_of_items,price_per_item,order_status,total_amount,payment) values( "
 											+ userId + ",seq_name.nextval," + productId + ", to_date('" + today
 											+ "','yyyy-MM-dd') , to_date( '" + deliveryDate + "','yyyy-MM-dd'),"
-											+ obj1.noOfItems + "," + price + ", 'ORDERED', " + totalBill + " ,'"
+											+ obj1.getNoOfItems() + "," + price + ", 'ORDERED', " + totalBill + " ,'"
 											+ payment + "')");
 							// stmt.executeUpdate(query);
 							Jdbcpst.preparestmt("update products p set p.stock=p.stock- ?  where product_id =?",
-									obj1.noOfItems, productId);
+									obj1.getNoOfItems(), productId);
 							Jdbcpst.preparestmt("update products set status='OUT OF STOCK',stock=0 where stock<=0");
 
 						}
@@ -124,14 +125,14 @@ public class AdminProfileDaoImpl implements AdminProfileDao {
 			try (ResultSet rs = stmt.executeQuery(sql);) {
 				while (rs.next()) {
 					AdminProfile ap = new AdminProfile();
-					ap.productName = rs.getString("product_name");
-					ap.productId = rs.getInt("product_Id");
-					ap.manufacturer = rs.getString("manufacturer");
-					ap.quantity = rs.getFloat("quantity");
-					ap.unit = rs.getString("unit");
-					ap.priceRS = rs.getInt("price_rs");
-					ap.stock = rs.getInt("stock");
-					ap.status = rs.getString("status");
+					ap.setProductName(rs.getString("product_name"));
+					ap.setProductId(rs.getInt("product_Id"));
+					ap.setManufacturer(rs.getString("manufacturer"));
+					ap.setQuantity(rs.getFloat("quantity"));
+					ap.setUnit(rs.getString("unit"));
+					ap.setPriceRS(rs.getInt("price_rs"));
+					ap.setStock(rs.getInt("stock"));
+					ap.setStatus(rs.getString("status"));
 					view.add(ap);
 				}
 			}
@@ -149,7 +150,7 @@ public class AdminProfileDaoImpl implements AdminProfileDao {
 			for (UserProfile obj1 : ob) {
 				String sql = "select product_id,price_rs from products where product_id= ?";
 				try (PreparedStatement pst = con.prepareStatement(sql);) {
-					pst.setInt(1, obj1.productid);
+					pst.setInt(1, obj1.getProductid());
 					try (ResultSet rs1 = pst.executeQuery();) {
 						int proId = 0;
 						int price = 0;
@@ -157,7 +158,7 @@ public class AdminProfileDaoImpl implements AdminProfileDao {
 							proId = rs1.getInt("product_id");
 							price = rs1.getInt("price_rs");
 						}
-						int totalBill = price * obj1.noOfItems;
+						int totalBill = price * obj1.getNoOfItems();
 						amount = amount + totalBill;
 					}
 				}

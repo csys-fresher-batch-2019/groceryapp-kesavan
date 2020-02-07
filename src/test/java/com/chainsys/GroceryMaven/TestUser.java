@@ -141,7 +141,7 @@ public class TestUser {
 							test3 = 1;
 							UserProfile od = new UserProfile(a, n);
 							orderproducts.add(od);
-							
+
 						} else {
 							LOGGER.info("\nCheck the Stock Value");
 							test3 = 0;
@@ -152,19 +152,19 @@ public class TestUser {
 					}
 				}
 				AdminProfileDaoImpl obj7 = new AdminProfileDaoImpl();
-				int total=obj7.bill(orderproducts);
+				int total = obj7.bill(orderproducts);
 				System.out.println(total);
-				if (orderproducts.size() > 0 && n >= 1) {			
+				if (orderproducts.size() > 0 && n >= 1) {
 					System.out.println("Select payment type \n1.COD \n2.DebitCard");
-					int type=sc.nextInt();
-					if(type==1) {
-					String paytype="COD";
-					obj.PlaceOrder(orderproducts, username,paytype);
-					LOGGER.info(" !!! Order Placed Successfully !!! ");
-					}else {
-						String paytype="CARD";
+					int type = sc.nextInt();
+					if (type == 1) {
+						String paytype = "COD";
+						obj.PlaceOrder(orderproducts, username, paytype);
+						LOGGER.info(" !!! Order Placed Successfully !!! ");
+					} else {
+						String paytype = "CARD";
 						System.out.println("Enter card");
-						obj.PlaceOrder(orderproducts, username,paytype);
+						obj.PlaceOrder(orderproducts, username, paytype);
 						LOGGER.info(" !!! Order Placed Successfully !!! ");
 					}
 				}
@@ -207,9 +207,9 @@ public class TestUser {
 				int id = sc.nextInt();
 				if (obj.checkorderid(id)) {
 					String n = obj.Trackorder(id);
-						LOGGER.info(n);
-						int days = obj.Trackordercancel(id);
-						if(days>3) {
+					LOGGER.info(n);
+					int days = obj.Trackordercancel(id);
+					if (days > 3) {
 						LOGGER.info("Press \n 1.Add Review \n 2.Skip");
 						int choice3 = sc.nextInt();
 						if (choice3 == 1) {
@@ -220,11 +220,12 @@ public class TestUser {
 							} else {
 								LOGGER.info("You Already reviewed this product");
 								continue;
-							}}
-						} else {
-							continue;
+							}
 						}
-					
+					} else {
+						continue;
+					}
+
 				} else {
 					LOGGER.info("Invalid OrderId");
 				}

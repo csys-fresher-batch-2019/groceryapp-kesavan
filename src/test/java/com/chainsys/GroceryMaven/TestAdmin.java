@@ -27,19 +27,19 @@ public class TestAdmin {
 				// ADD PRODUCTDETAILS
 				AdminProfile obj1 = new AdminProfile();
 				LOGGER.getInput("Enter productname :");
-				obj1.productName = scan.next();
+				obj1.setProductName(scan.next());
 				LOGGER.getInput("Enter productid :");
-				obj1.productId = scan.nextInt();
+				obj1.setProductId(scan.nextInt());
 				LOGGER.getInput("Enter manufacturer :");
-				obj1.manufacturer = scan.next();
+				obj1.setManufacturer(scan.next());
 				LOGGER.getInput("Enter quantity :");
-				obj1.quantity = scan.nextFloat();
+				obj1.setQuantity(scan.nextFloat());
 				LOGGER.getInput("Enter Units :");
-				obj1.unit = scan.next();
+				obj1.setUnit(scan.next());
 				LOGGER.getInput("Enter Price :");
-				obj1.priceRS = scan.nextInt();
+				obj1.setPriceRS(scan.nextInt());
 				LOGGER.getInput("Enter Stock :");
-				obj1.stock = scan.nextInt();
+				obj1.setStock(scan.nextInt());
 				AdminProfile[] p = { obj1 };
 				obj.addProducts(p);
 				break;
