@@ -4,12 +4,9 @@ import java.sql.Connection;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
-
-import com.chainsys.Util.DBException;
 import com.chainsys.Util.Errormessage;
 import com.chainsys.Util.Jdbcpst;
 import com.chainsys.Util.LoggerGrocery;
@@ -153,15 +150,16 @@ public class AdminProfileDaoImpl implements AdminProfileDao {
 				String sql = "select product_id,price_rs from products where product_id= ?";
 				try (PreparedStatement pst = con.prepareStatement(sql);) {
 					pst.setInt(1, obj1.productid);
-					ResultSet rs1 = pst.executeQuery();
-					int productId = 0;
-					int price = 0;
-					if (rs1.next()) {
-						productId = rs1.getInt("product_id");
-						price = rs1.getInt("price_rs");
+					try (ResultSet rs1 = pst.executeQuery();) {
+						int proId = 0;
+						int price = 0;
+						if (rs1.next()) {
+							proId = rs1.getInt("product_id");
+							price = rs1.getInt("price_rs");
+						}
+						int totalBill = price * obj1.noOfItems;
+						amount = amount + totalBill;
 					}
-					int totalBill = price * obj1.noOfItems;
-					amount = amount + totalBill;
 				}
 			}
 		} catch (Exception e) {
