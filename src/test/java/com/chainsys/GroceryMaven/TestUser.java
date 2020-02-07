@@ -2,7 +2,6 @@ package com.chainsys.GroceryMaven;
 
 import java.util.ArrayList;
 import java.util.Scanner;
-import com.chainsys.GroceryMaven.UserProfileDaoImpl.ordersummary;
 import com.chainsys.Util.LoggerGrocery;
 
 public class TestUser {
@@ -142,6 +141,7 @@ public class TestUser {
 							test3 = 1;
 							UserProfile od = new UserProfile(a, n);
 							orderproducts.add(od);
+							
 						} else {
 							LOGGER.info("\nCheck the Stock Value");
 							test3 = 0;
@@ -151,9 +151,22 @@ public class TestUser {
 						test3 = 0;
 					}
 				}
-				if (orderproducts.size() > 0 && n >= 1) {
-					obj.PlaceOrder(orderproducts, username);
+				AdminProfileDaoImpl obj7 = new AdminProfileDaoImpl();
+				int total=obj7.bill(orderproducts);
+				System.out.println(total);
+				if (orderproducts.size() > 0 && n >= 1) {			
+					System.out.println("Select payment type \n1.COD \n2.DebitCard");
+					int type=sc.nextInt();
+					if(type==1) {
+					String paytype="COD";
+					obj.PlaceOrder(orderproducts, username,paytype);
 					LOGGER.info(" !!! Order Placed Successfully !!! ");
+					}else {
+						String paytype="CARD";
+						System.out.println("Enter card");
+						obj.PlaceOrder(orderproducts, username,paytype);
+						LOGGER.info(" !!! Order Placed Successfully !!! ");
+					}
 				}
 			} else if (choice == 4) {
 				ArrayList<ordersummary> orderproducts = new ArrayList<ordersummary>();
@@ -170,7 +183,7 @@ public class TestUser {
 				LOGGER.getInput("Enter Orderid");
 				int id = sc.nextInt();
 				if (obj.checkorderid(id)) {
-					int days = obj.Trackorder(id);
+					int days = obj.Trackordercancel(id);
 					if (days == 0) {
 						LOGGER.getInput("Type CONFIRM to cancel order");
 						String a = sc.next();
@@ -193,15 +206,10 @@ public class TestUser {
 				LOGGER.getInput("Enter Orderid");
 				int id = sc.nextInt();
 				if (obj.checkorderid(id)) {
-					int n = obj.Trackorder(id);
-					if (n == 0) {
-						LOGGER.info(" \n !! ORDERED !! ");
-					} else if (n == 1) {
-						LOGGER.info(" \n !! DISPATCHED  WAIT FOR 2 MORE DAYS !! ");
-					} else if (n == 2) {
-						LOGGER.info(" \n !! SHIPPED WAIT FOR 1 MORE DAY !! ");
-					} else if (n >= 3) {
-						LOGGER.info(" \n !! DELIVERED !! ");
+					String n = obj.Trackorder(id);
+						LOGGER.info(n);
+						int days = obj.Trackordercancel(id);
+						if(days>3) {
 						LOGGER.info("Press \n 1.Add Review \n 2.Skip");
 						int choice3 = sc.nextInt();
 						if (choice3 == 1) {
@@ -212,11 +220,11 @@ public class TestUser {
 							} else {
 								LOGGER.info("You Already reviewed this product");
 								continue;
-							}
+							}}
 						} else {
 							continue;
 						}
-					}
+					
 				} else {
 					LOGGER.info("Invalid OrderId");
 				}

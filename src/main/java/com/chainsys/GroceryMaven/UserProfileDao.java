@@ -2,7 +2,7 @@ package com.chainsys.GroceryMaven;
 
 import java.util.ArrayList;
 
-public interface UserProfileDao<oredersummary> {
+public interface UserProfileDao {
 
 	int CreateAccount(String user, String pass, String address, long mobile, String mail) throws Exception;
 
@@ -10,17 +10,20 @@ public interface UserProfileDao<oredersummary> {
 
 	void Forgotpassword(String mailid, String password) throws Exception;
 
-	ArrayList<UserProfile> ViewProducts(String a) throws Exception;
+	ArrayList<UserDisplay> ViewProducts(String a) throws Exception;
 
-	ArrayList<UserProfile> PlaceOrder(ArrayList<?> o, String username) throws Exception;
+	ArrayList<UserProfile> PlaceOrder(ArrayList<?> o, String username,String payment) throws Exception;
 
-	ArrayList<oredersummary> ViewOrder(int userid) throws Exception;
+	ArrayList<ordersummary> ViewOrder(int userid) throws Exception;
 
 	void Review(int id, int rating) throws Exception;
 
 	String Cancelorder(int orderid) throws Exception;
 
-	int Trackorder(int orderid) throws Exception;
+	String Trackorder(int orderid) throws Exception;
+	
+	int Trackordercancel(int orderid) throws Exception;
+
 
 	boolean checkusername(String username) throws Exception;
 

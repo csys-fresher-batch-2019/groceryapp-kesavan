@@ -10,46 +10,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import com.chainsys.Util.Jdbcpst;
 import com.chainsys.Util.databaseconnection;
+import com.chainsys.GroceryMaven.ordersummary;
 
-public class UserProfileDaoImpl<ordersummary> implements UserProfileDao {
-
-	class ordersummary {
-		public String toString() {
-			return "ordersummary [orderid=" + orderid + ", productname=" + productname + ", manufacturer="
-					+ manufacturer + ", noofitems=" + noofitems + ", totalamount=" + totalamount + ", orderdate="
-					+ orderdate + ", deliverydate=" + deliverydate + ", deliveryaddress=" + deliveryaddress
-					+ ", orderstatus=" + orderstatus + ", payment=" + payment + "]";
-		}
-
-		int orderid;
-		String productname;
-		String manufacturer;
-		int noofitems;
-		int totalamount;
-		Date orderdate;
-		Date deliverydate;
-		String deliveryaddress;
-		String orderstatus;
-		String payment;
-
-		public ordersummary(int orderid, String product_name, String manufacturer, int noofitems, int totalamount,
-				Date orderdate, Date deliverydate, String deliveryaddress, String orderstatus, String payment) {
-			super();
-			this.orderid = orderid;
-			this.productname = product_name;
-			this.manufacturer = manufacturer;
-			this.noofitems = noofitems;
-			this.totalamount = totalamount;
-			this.orderdate = orderdate;
-			this.deliverydate = deliverydate;
-			this.deliveryaddress = deliveryaddress;
-			this.orderstatus = orderstatus;
-			this.payment = payment;
-		}
-
-		public ordersummary() {
-		}
-	}
+public class UserProfileDaoImpl implements UserProfileDao {
 
 	// CREATE ACCOUNT
 	public int CreateAccount(String user, String pass, String address, long mobile, String mail) throws Exception {
@@ -72,7 +35,8 @@ public class UserProfileDaoImpl<ordersummary> implements UserProfileDao {
 	public boolean Login(String username, String pass) throws Exception {
 		Connection con = databaseconnection.connect();
 		Statement stmt = con.createStatement();
-		String sql = "select user_name,password from usersdata where user_name = '" + username + "' and password = '" + pass + "'";
+		String sql = "select user_name,password from usersdata where user_name = '" + username + "' and password = '"
+				+ pass + "'";
 		ResultSet rs1 = stmt.executeQuery(sql);
 		if (rs1.next()) {
 			return true;
@@ -108,9 +72,9 @@ public class UserProfileDaoImpl<ordersummary> implements UserProfileDao {
 	}
 
 	// PLACE ORDER
-	public ArrayList<UserProfile> PlaceOrder(ArrayList a, String username) throws Exception {
+	public ArrayList<UserProfile> PlaceOrder(ArrayList a, String username, String type) throws Exception {
 		AdminProfileDaoImpl obj = new AdminProfileDaoImpl();
-		obj.createOrder(a, username);
+		obj.createOrder(a, username, type);
 		return null;
 	}
 
@@ -165,7 +129,8 @@ public class UserProfileDaoImpl<ordersummary> implements UserProfileDao {
 	}
 
 	// TRACKORDER
-	public int Trackorder(int orderid) throws Exception {
+	public String Trackorder(int orderid) throws Exception {
+		String s = "";
 		Connection con = databaseconnection.connect();
 		Statement stmt = con.createStatement();
 		String sql = "select order_date from orderdata where order_id=" + orderid;
@@ -176,9 +141,18 @@ public class UserProfileDaoImpl<ordersummary> implements UserProfileDao {
 		String local = date.substring(0, 10);
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDate date1 = LocalDate.parse(local, formatter);
-		int days = Period.between(date1, LocalDate.now()).getDays();
+		int n = Period.between(date1, LocalDate.now()).getDays();
+		if (n == 0) {
+			s = " \n !! ORDERED !! ";
+		} else if (n == 1) {
+			s = " \n !! DISPATCHED  WAIT FOR 2 MORE DAYS !! ";
+		} else if (n == 2) {
+			s = " \n !! SHIPPED WAIT FOR 1 MORE DAY !! ";
+		} else if (n >= 3) {
+			s = " \n !! DELIVERED !! ";
+		}
 		con.close();
-		return days;
+		return s;
 	}
 
 	// ADD REVIEW
@@ -210,7 +184,7 @@ public class UserProfileDaoImpl<ordersummary> implements UserProfileDao {
 
 	// CHANGE ADDRESS
 	public void changeaddress(String username, String address) throws Exception {
-		UserProfileDaoImpl<ordersummary> obj = new UserProfileDaoImpl<ordersummary>();
+		UserProfileDaoImpl obj = new UserProfileDaoImpl();
 		int id = obj.checkuserid(username);
 		Jdbcpst.preparestmt("update usersdata set delivery_address= ? where user_id= ?", address, id);
 
@@ -256,7 +230,7 @@ public class UserProfileDaoImpl<ordersummary> implements UserProfileDao {
 	public boolean checkstock(int noofitems, int product) throws Exception {
 		Connection con = databaseconnection.connect();
 		Statement stmt = con.createStatement();
-		ResultSet rs = stmt.executeQuery("select stock from products where product_id ="+product);
+		ResultSet rs = stmt.executeQuery("select stock from products where product_id =" + product);
 		rs.next();
 		int stock = rs.getInt("stock");
 		if (noofitems <= stock) {
@@ -361,6 +335,23 @@ public class UserProfileDaoImpl<ordersummary> implements UserProfileDao {
 		}
 		con.close();
 		return false;
+	}
+
+	// TRACK FOR CAMCEL
+	public int Trackordercancel(int orderid) throws Exception {
+		Connection con = databaseconnection.connect();
+		Statement stmt = con.createStatement();
+		String sql = "select order_date from orderdata where order_id=" + orderid;
+		stmt.executeUpdate(sql);
+		ResultSet rs = stmt.executeQuery(sql);
+		rs.next();
+		String date = rs.getString("order_date");
+		String local = date.substring(0, 10);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate date1 = LocalDate.parse(local, formatter);
+		int n = Period.between(date1, LocalDate.now()).getDays();
+
+		return n;
 	}
 
 }
