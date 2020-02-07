@@ -8,7 +8,6 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-import com.chainsys.Util.DBexception;
 import com.chainsys.Util.Jdbcpst;
 
 import com.chainsys.Util.databaseconnection;
@@ -52,28 +51,28 @@ public class AdminProfileDaoImpl implements AdminProfileDao {
 		for (UserProfile obj1 : ob) {
 			String sql = "select product_id,price_rs from products where product_id= ?";
 			PreparedStatement pst = con.prepareStatement(sql);
-				pst.setInt(1, obj1.productid);
-				ResultSet rs1 = pst.executeQuery();
-				int productId = 0;
-				int price = 0;
-				if (rs1.next()) {
-					productId = rs1.getInt("product_id");
-					price = rs1.getInt("price_rs");
-				}
-				int totalBill = price * obj1.noOfItems;
-				String payment = type;
-				stmt.executeUpdate(
-						"insert into orderdata(user_id,order_id,product_id,order_date,delivery_date,no_of_items,price_per_item,order_status,total_amount,payment) values( "
-								+ userId + ",seq_name.nextval," + productId + ", to_date('" + today
-								+ "','yyyy-MM-dd') , to_date( '" + deliveryDate + "','yyyy-MM-dd')," + obj1.noOfItems
-								+ "," + price + ", 'ORDERED', " + totalBill + " ,'" + payment + "')");
-				// stmt.executeUpdate(query);
-				Jdbcpst.preparestmt("update products p set p.stock=p.stock- ?  where product_id =?", obj1.noOfItems,
-						productId);
-				Jdbcpst.preparestmt("update products set status='OUT OF STOCK',stock=0 where stock<=0");
+			pst.setInt(1, obj1.productid);
+			ResultSet rs1 = pst.executeQuery();
+			int productId = 0;
+			int price = 0;
+			if (rs1.next()) {
+				productId = rs1.getInt("product_id");
+				price = rs1.getInt("price_rs");
 			}
+			int totalBill = price * obj1.noOfItems;
+			String payment = type;
+			stmt.executeUpdate(
+					"insert into orderdata(user_id,order_id,product_id,order_date,delivery_date,no_of_items,price_per_item,order_status,total_amount,payment) values( "
+							+ userId + ",seq_name.nextval," + productId + ", to_date('" + today
+							+ "','yyyy-MM-dd') , to_date( '" + deliveryDate + "','yyyy-MM-dd')," + obj1.noOfItems + ","
+							+ price + ", 'ORDERED', " + totalBill + " ,'" + payment + "')");
+			// stmt.executeUpdate(query);
+			Jdbcpst.preparestmt("update products p set p.stock=p.stock- ?  where product_id =?", obj1.noOfItems,
+					productId);
+			Jdbcpst.preparestmt("update products set status='OUT OF STOCK',stock=0 where stock<=0");
+		}
 		con.close();
-		
+
 	}
 
 	public void updateProducts(int value, int id) throws Exception {
