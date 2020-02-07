@@ -7,12 +7,10 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-
 import com.chainsys.Util.Errormessage;
 import com.chainsys.Util.Jdbcpst;
 import com.chainsys.Util.LoggerGrocery;
 import com.chainsys.Util.databaseconnection;
-import com.chainsys.GroceryMaven.ordersummary;
 
 public class UserProfileDaoImpl implements UserProfileDao {
 	LoggerGrocery LOGGER = LoggerGrocery.getInstance();
@@ -87,16 +85,15 @@ public class UserProfileDaoImpl implements UserProfileDao {
 		try {
 			AdminProfileDaoImpl obj = new AdminProfileDaoImpl();
 			obj.createOrder(a, username, type);
-			return null;
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
-			return null;
 		}
+		return a;
 	}
 
 	// VIEW ORDERSUMMARY
 	public ArrayList<ordersummary> ViewOrder(int userid) {
-		ArrayList<ordersummary> productsview = new ArrayList<ordersummary>();
+		ArrayList<ordersummary> productsview = new ArrayList<>();
 		try (Connection con = databaseconnection.connect(); Statement stmt = con.createStatement();) {
 			LocalDate today = LocalDate.now();
 			Jdbcpst.preparestmt("update orderdata set order_status = 'DELIVERED' where to_date('" + today
