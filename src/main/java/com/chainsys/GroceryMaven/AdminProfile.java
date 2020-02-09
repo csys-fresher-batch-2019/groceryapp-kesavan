@@ -76,18 +76,6 @@ public class AdminProfile {
 	private int stock;
 	private String status;
 
-	public AdminProfile(String productName, int productId, String manufacturer, float quantity, String unit, int price,
-			int stock) {
-		super();
-		this.productName = productName;
-		this.productId = productId;
-		this.manufacturer = manufacturer;
-		this.quantity = quantity;
-		this.unit = unit;
-		this.priceRS = price;
-		this.stock = stock;
-	}
-
 	// USER
 	private int userid;
 	private String password;
@@ -95,15 +83,6 @@ public class AdminProfile {
 	private long phoneno;
 	private String deliveryaddress;
 	private String mail;
-
-	public AdminProfile(String password, String username, String deliveryaddress, long phoneno, String mail) {
-		super();
-		this.password = password;
-		this.username = username;
-		this.deliveryaddress = deliveryaddress;
-		this.phoneno = phoneno;
-		this.mail = mail;
-	}
 
 	// ORDER DETAILS
 	private int noOfItems;
@@ -180,7 +159,6 @@ public class AdminProfile {
 	}
 
 	public AdminProfile() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public String toString() {

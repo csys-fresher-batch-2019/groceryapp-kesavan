@@ -18,7 +18,7 @@ public class TestAdmin {
 		while (test) {
 
 			LOGGER.getInput(
-					" Press\n 1.Add Products \n 2.Add User Info \n 3.Update ProductStock \n 4.View Products\n 5.Close");
+					" Press\n 1.Add Products \n 2.Update ProductStock \n 3.View Products\n 4.Close");
 			LOGGER.getInput("\n Enter your Choice");
 
 			int choice = scan.nextInt();
@@ -43,18 +43,8 @@ public class TestAdmin {
 				AdminProfile[] p = { obj1 };
 				obj.addProducts(p);
 				break;
+
 			case 2:
-				// ADD USERDETAILS
-				AdminProfile u1 = new AdminProfile("Ravi1105", "Ravi", "53,Kumaran nagar,Kovai", 9090909090L,
-						"ravi@gmail.com");
-				AdminProfile u2 = new AdminProfile("Hari1106", "Hari", "23,Bharathi nagar,Kovai", 8080808080L,
-						"hari@gmail.com");
-				AdminProfile u3 = new AdminProfile("Kumar1107", "Kumar", "83,Gandhi nagar,Kovai", 7070707070L,
-						"kumar@gmail.com");
-				AdminProfile[] u = { u1, u2, u3 };
-				obj.userDetails(u);
-				break;
-			case 3:
 				// UPDATE STOCK
 				LOGGER.getInput("Enter the stock value");
 				int val = scan.nextInt();
@@ -62,7 +52,7 @@ public class TestAdmin {
 				int id = scan.nextInt();
 				obj.updateProducts(val, id);
 				break;
-			case 4:
+			case 3:
 				// VIEW PRODUCTS
 				ArrayList<AdminProfile> view1 = new ArrayList<AdminProfile>();
 				view1 = obj.viewProducts();

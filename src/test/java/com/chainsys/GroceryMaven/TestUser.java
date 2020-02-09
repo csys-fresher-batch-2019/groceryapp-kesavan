@@ -127,21 +127,23 @@ public class TestUser {
 				}
 			} else if (choice == 3) {
 				// create order
-				ArrayList<UserProfile> orderproducts = new ArrayList<UserProfile>();
+				ArrayList<UserProfile> orderproducts = new ArrayList<>();
 				LOGGER.getInput("\nPress 1 for add products Press 0 for close");
 				int test1 = 1, test3 = 1, n = 0;
 				while (test1 == 1 && test3 == 1) {
 					LOGGER.getInput("Enter product Id");
 					int a = sc.nextInt();
+
 					if (obj.checkproduct(a)) {
 						LOGGER.getInput("Enter number of items");
 						n = sc.nextInt();
-						if (obj.checkstock(n, a)) {
+						if (obj.checkstock(n, a) && n > 0) {
+							UserProfile od = new UserProfile();
+							od.setProductid(a);
+							od.setNoOfItems(n);
+							orderproducts.add(od);
 							test1 = sc.nextInt();
 							test3 = 1;
-							UserProfile od = new UserProfile(a, n);
-							orderproducts.add(od);
-
 						} else {
 							LOGGER.info("\nCheck the Stock Value");
 							test3 = 0;
@@ -153,7 +155,7 @@ public class TestUser {
 				}
 				AdminProfileDaoImpl obj7 = new AdminProfileDaoImpl();
 				int total = obj7.bill(orderproducts);
-				System.out.println(total);
+				System.out.println("Bill Amount : " + total);
 				if (orderproducts.size() > 0 && n >= 1) {
 					System.out.println("Select payment type \n1.COD \n2.DebitCard");
 					int type = sc.nextInt();
@@ -255,8 +257,7 @@ public class TestUser {
 		LoggerGrocery LOGGER = LoggerGrocery.getInstance();
 		Scanner sc = new Scanner(System.in);
 		UserProfileDaoImpl obj = new UserProfileDaoImpl();
-		String user1 = user;
-		if (obj.checkusername(user1)) {
+		if (obj.checkusername(user)) {
 			LOGGER.getInput("Enter your MailId");
 			String mail = sc.next();
 			if (obj.checkmail(mail)) {

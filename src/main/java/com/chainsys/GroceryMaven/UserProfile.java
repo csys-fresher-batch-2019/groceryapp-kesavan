@@ -6,6 +6,11 @@ public class UserProfile {
 	private int productid;
 	private int noOfItems;
 
+	
+
+	public UserProfile() {
+	}
+
 	public int getProductid() {
 		return productid;
 	}
@@ -20,15 +25,6 @@ public class UserProfile {
 
 	public void setNoOfItems(int noOfItems) {
 		this.noOfItems = noOfItems;
-	}
-
-	public UserProfile(int productid, int noOfItems) {
-		super();
-		this.productid = productid;
-		this.noOfItems = noOfItems;
-	}
-
-	public UserProfile() {
 	}
 
 	public String toString() {

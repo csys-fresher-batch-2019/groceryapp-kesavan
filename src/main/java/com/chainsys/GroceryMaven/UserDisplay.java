@@ -14,21 +14,6 @@ public class UserDisplay {
 	private int rating;
 	private String review;
 
-	private UserDisplay(String productName, int productId, String manufacturer, float quantity, String unit,
-			int priceRS, int stock, String status, int rating, String review) {
-		super();
-		this.productName = productName;
-		this.productId = productId;
-		this.manufacturer = manufacturer;
-		this.quantity = quantity;
-		this.unit = unit;
-		this.priceRS = priceRS;
-		this.stock = stock;
-		this.status = status;
-		this.rating = rating;
-		this.review = review;
-	}
-
 	public String getProductName() {
 		return productName;
 	}

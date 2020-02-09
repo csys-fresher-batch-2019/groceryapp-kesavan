@@ -2,6 +2,7 @@ package com.chainsys.GroceryMaven;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.Period;
@@ -28,10 +29,11 @@ public class UserProfileDaoImpl implements UserProfileDao {
 				rs.next();
 				id = rs.getInt("user_id");
 			}
+			return id;
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
+			return 0;
 		}
-		return id;
 
 	}
 
@@ -44,12 +46,12 @@ public class UserProfileDaoImpl implements UserProfileDao {
 				if (rs1.next()) {
 					return true;
 				}
-				return false;
 			}
+			return false;
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
+			return false;
 		}
-		return false;
 	}
 
 	// VIEW PRODUCTS
@@ -74,10 +76,12 @@ public class UserProfileDaoImpl implements UserProfileDao {
 					products.add(ap);
 				}
 			}
+			return products;
+
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
+			return null;
 		}
-		return products;
 	}
 
 	// PLACE ORDER
@@ -85,10 +89,11 @@ public class UserProfileDaoImpl implements UserProfileDao {
 		try {
 			AdminProfileDaoImpl obj = new AdminProfileDaoImpl();
 			obj.createOrder(a, username, type);
+			return a;
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
+			return null;
 		}
-		return a;
 	}
 
 	// VIEW ORDERSUMMARY
@@ -98,6 +103,7 @@ public class UserProfileDaoImpl implements UserProfileDao {
 			LocalDate today = LocalDate.now();
 			Jdbcpst.preparestmt("update orderdata set order_status = 'DELIVERED' where to_date('" + today
 					+ "','yyyy-MM-dd') = delivery_date");
+			
 			String sql = "select order_id,product_name,manufacturer,no_of_items,price_per_item,total_amount,"
 					+ "order_date,delivery_date,delivery_address,order_status,payment from orderdata o "
 					+ "inner join products p on p.product_id=o.product_id and user_id=" + userid + ""
@@ -118,30 +124,39 @@ public class UserProfileDaoImpl implements UserProfileDao {
 					productsview.add(os);
 				}
 			}
+			return productsview;
+
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
+			return null;
 		}
-		return productsview;
 	}
 
 	// CANCELORDER
 	public String Cancelorder(int orderid) {
 		try (Connection con = databaseconnection.connect(); Statement stmt = con.createStatement();) {
-			String sql2 = "select product_id from orderdata where order_id=" + orderid;
-			try (ResultSet rs = stmt.executeQuery(sql2);) {
-				rs.next();
-				int id = rs.getInt("product_id");
-				Jdbcpst.preparestmt(
-						"update products p set p.stock=p.stock+ (select no_of_items from orderdata  where product_id = "
-								+ id + " and order_id=" + orderid + ") where p.product_id = " + id + "");
-				Jdbcpst.preparestmt("delete from orderdata where order_id= ?", orderid);
-				Jdbcpst.preparestmt("update products set status='AVAILABLE'where stock > 0");
-				Jdbcpst.preparestmt(" update products set status='OUTOFSTOCK'where stock <= 0");
+			UserProfileDaoImpl obj = new UserProfileDaoImpl();
+			int days = obj.Trackordercancel(orderid);
+			if (days == 0) {
+				String sql2 = "select product_id from orderdata where order_id=" + orderid;
+				try (ResultSet rs = stmt.executeQuery(sql2);) {
+					rs.next();
+					int id = rs.getInt("product_id");
+					Jdbcpst.preparestmt(
+							"update products p set p.stock=p.stock+ (select no_of_items from orderdata  where product_id = "
+									+ id + " and order_id=" + orderid + ") where p.product_id = " + id + "");
+					Jdbcpst.preparestmt("delete from orderdata where order_id= ?", orderid);
+					Jdbcpst.preparestmt("update products set status='AVAILABLE'where stock > 0");
+					Jdbcpst.preparestmt(" update products set status='OUTOFSTOCK'where stock <= 0");
+				}
+				return "CANCELLED SUCCESSFULLY";
+			} else {
+				return "YOUR ORDER DISPATCHED !! NOT ABLE TO CANCEL IT";
 			}
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
+			return null;
 		}
-		return "CANCELLED SUCCESSFULLY";
 	}
 
 	// TRACKORDER
@@ -167,10 +182,11 @@ public class UserProfileDaoImpl implements UserProfileDao {
 					s = " \n !! DELIVERED !! ";
 				}
 			}
+			return s;
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
+			return null;
 		}
-		return s;
 	}
 
 	// ADD REVIEW
@@ -414,6 +430,23 @@ public class UserProfileDaoImpl implements UserProfileDao {
 			return 0;
 
 		}
+	}
+
+	public boolean checkmailpass(String mail, String user,String pass) {
+		try (Connection con = databaseconnection.connect(); Statement stmt = con.createStatement();) {
+			String sql="select mail_id from usersdata where user_name='" + user + "'";
+				ResultSet rs=stmt.executeQuery(sql);
+				String mail1=rs.getString("mail_id");
+				if(mail.equals("mail1")) {
+					UserProfileDaoImpl obj=new UserProfileDaoImpl();
+					obj.Forgotpassword(mail, pass);
+				}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			LOGGER.error(Errormessage.NO_DATA_FOUND);
+		}
+		
+		return false;
 	}
 
 }

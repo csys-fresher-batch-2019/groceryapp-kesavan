@@ -136,33 +136,33 @@ public class AdminProfileDaoImpl implements AdminProfileDao {
 					view.add(ap);
 				}
 			}
-		}
+			return view;
 
-		catch (Exception e) {
+		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
+			return null;
+
 		}
-		return view;
 	}
 
 	public int bill(ArrayList<UserProfile> ob) {
 		int amount = 0;
 		try (Connection con = databaseconnection.connect(); Statement stmt = con.createStatement();) {
 			for (UserProfile obj1 : ob) {
-				String sql = "select product_id,price_rs from products where product_id= ?";
+				String sql = "select price_rs from products where product_id= ?";
 				try (PreparedStatement pst = con.prepareStatement(sql);) {
 					pst.setInt(1, obj1.getProductid());
 					try (ResultSet rs1 = pst.executeQuery();) {
-						int proId = 0;
-						int price = 0;
 						if (rs1.next()) {
-							proId = rs1.getInt("product_id");
-							price = rs1.getInt("price_rs");
+							int price = rs1.getInt("price_rs");
+							System.out.println(price);
+							int totalBill = price * obj1.getNoOfItems();
+							amount = amount + totalBill;
 						}
-						int totalBill = price * obj1.getNoOfItems();
-						amount = amount + totalBill;
 					}
 				}
 			}
+			return amount;
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
 		}
