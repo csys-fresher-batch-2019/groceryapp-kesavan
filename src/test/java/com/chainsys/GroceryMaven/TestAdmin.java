@@ -19,8 +19,7 @@ public class TestAdmin {
 		AdminProfileDaoImpl obj = new AdminProfileDaoImpl();
 		while (test) {
 
-			LOGGER.getInput(
-					" Press\n 1.Add Products \n 2.Update ProductStock \n 3.View Products\n 4.Close");
+			LOGGER.getInput(" Press\n 1.Add Products \n 2.Update ProductStock \n 3.View Products\n 4.Close");
 			LOGGER.getInput("\n Enter your Choice");
 
 			int choice = scan.nextInt();
