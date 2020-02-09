@@ -1,8 +1,8 @@
-package com.chainsys.GroceryMaven;
+package com.chainsys.grocerymaven;
 
 import java.util.ArrayList;
 import java.util.Scanner;
-import com.chainsys.Util.LoggerGrocery;
+import com.chainsys.util.LoggerGrocery;
 
 public class TestUser {
 
@@ -171,11 +171,11 @@ public class TestUser {
 					}
 				}
 			} else if (choice == 4) {
-				ArrayList<ordersummary> orderproducts = new ArrayList<ordersummary>();
+				ArrayList<Ordersummary> orderproducts = new ArrayList<Ordersummary>();
 				int user = obj.checkuserid(username);
 				orderproducts = obj.ViewOrder(user);
 				if (orderproducts.size() > 0) {
-					for (ordersummary obj1 : orderproducts) {
+					for (Ordersummary obj1 : orderproducts) {
 						LOGGER.info(obj1);
 					}
 				} else {

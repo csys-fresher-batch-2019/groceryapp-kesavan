@@ -1,4 +1,4 @@
-package com.chainsys.GroceryMaven;
+package com.chainsys.grocerymaven;
 
 import java.sql.Connection;
 
@@ -7,10 +7,10 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import com.chainsys.Util.Errormessage;
-import com.chainsys.Util.Jdbcpst;
-import com.chainsys.Util.LoggerGrocery;
-import com.chainsys.Util.databaseconnection;
+import com.chainsys.util.Errormessage;
+import com.chainsys.util.Jdbcpst;
+import com.chainsys.util.LoggerGrocery;
+import com.chainsys.util.Databaseconnection;
 
 public class AdminProfileDaoImpl implements AdminProfileDao {
 	LoggerGrocery LOGGER = LoggerGrocery.getInstance();
@@ -65,7 +65,7 @@ public class AdminProfileDaoImpl implements AdminProfileDao {
 
 		String sql2 = "select user_id from usersdata where user_name= '" + user + "'";
 
-		try (Connection con = databaseconnection.connect(); Statement stmt = con.createStatement();) {
+		try (Connection con = Databaseconnection.connect(); Statement stmt = con.createStatement();) {
 			try (ResultSet rs = stmt.executeQuery(sql2);) {
 				int userId = 0;
 				if (rs.next()) {
@@ -120,7 +120,7 @@ public class AdminProfileDaoImpl implements AdminProfileDao {
 	public ArrayList<AdminProfile> viewProducts() {
 		ArrayList<AdminProfile> view = new ArrayList<AdminProfile>();
 
-		try (Connection con = databaseconnection.connect(); Statement stmt = con.createStatement();) {
+		try (Connection con = Databaseconnection.connect(); Statement stmt = con.createStatement();) {
 			String sql = "select * from products";
 			try (ResultSet rs = stmt.executeQuery(sql);) {
 				while (rs.next()) {
@@ -136,18 +136,18 @@ public class AdminProfileDaoImpl implements AdminProfileDao {
 					view.add(ap);
 				}
 			}
-			return view;
 
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
-			return null;
 
 		}
+		return view;
+
 	}
 
 	public int bill(ArrayList<UserProfile> ob) {
 		int amount = 0;
-		try (Connection con = databaseconnection.connect(); Statement stmt = con.createStatement();) {
+		try (Connection con = Databaseconnection.connect(); Statement stmt = con.createStatement();) {
 			for (UserProfile obj1 : ob) {
 				String sql = "select price_rs from products where product_id= ?";
 				try (PreparedStatement pst = con.prepareStatement(sql);) {
@@ -162,7 +162,6 @@ public class AdminProfileDaoImpl implements AdminProfileDao {
 					}
 				}
 			}
-			return amount;
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
 		}

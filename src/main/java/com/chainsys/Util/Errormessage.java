@@ -1,4 +1,4 @@
-package com.chainsys.Util;
+package com.chainsys.util;
 
 public class Errormessage {
 

@@ -1,4 +1,4 @@
-package com.chainsys.GroceryMaven;
+package com.chainsys.grocerymaven;
 
 import java.util.ArrayList;
 

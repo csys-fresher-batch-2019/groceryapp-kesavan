@@ -1,9 +1,11 @@
-package com.chainsys.GroceryMaven;
+package com.chainsys.grocerymaven;
 
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import com.chainsys.Util.LoggerGrocery;
+import com.chainsys.util.LoggerGrocery;
+import com.chainsys.grocerymaven.AdminProfile;
+import com.chainsys.grocerymaven.AdminProfileDaoImpl;
 
 public class TestAdmin {
 

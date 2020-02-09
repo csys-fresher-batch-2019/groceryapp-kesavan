@@ -1,8 +1,8 @@
-package com.chainsys.GroceryMaven;
+package com.chainsys.grocerymaven;
 
 import java.sql.Date;
 
-public class ordersummary {
+public class Ordersummary {
 
 	public int getOrderid() {
 		return orderid;

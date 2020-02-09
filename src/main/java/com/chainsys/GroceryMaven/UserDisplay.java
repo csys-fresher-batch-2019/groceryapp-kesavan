@@ -1,4 +1,4 @@
-package com.chainsys.GroceryMaven;
+package com.chainsys.grocerymaven;
 
 public class UserDisplay {
 	// USER DISPLAY REVIEW
@@ -92,9 +92,6 @@ public class UserDisplay {
 
 	public void setReview(String review) {
 		this.review = review;
-	}
-
-	public UserDisplay() {
 	}
 
 	public String toString() {

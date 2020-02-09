@@ -1,10 +1,10 @@
-package com.chainsys.Util;
+package com.chainsys.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class databaseconnection {
+public class Databaseconnection {
 	public static Connection connect() throws SQLException {
 		LoggerGrocery LOGGER = LoggerGrocery.getInstance();
 		try {

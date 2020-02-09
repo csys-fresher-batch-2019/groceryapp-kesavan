@@ -1,17 +1,16 @@
-package com.chainsys.GroceryMaven;
+package com.chainsys.grocerymaven;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import com.chainsys.Util.Errormessage;
-import com.chainsys.Util.Jdbcpst;
-import com.chainsys.Util.LoggerGrocery;
-import com.chainsys.Util.databaseconnection;
+import com.chainsys.util.Errormessage;
+import com.chainsys.util.Jdbcpst;
+import com.chainsys.util.LoggerGrocery;
+import com.chainsys.util.Databaseconnection;
 
 public class UserProfileDaoImpl implements UserProfileDao {
 	LoggerGrocery LOGGER = LoggerGrocery.getInstance();
@@ -19,7 +18,7 @@ public class UserProfileDaoImpl implements UserProfileDao {
 	// CREATE ACCOUNT
 	public int CreateAccount(String user, String pass, String address, long mobile, String mail) {
 		int id = 0;
-		try (Connection con = databaseconnection.connect(); Statement stmt = con.createStatement();) {
+		try (Connection con = Databaseconnection.connect(); Statement stmt = con.createStatement();) {
 			String sql = "insert into usersdata(user_id,user_name,delivery_address,password,phone_no,mail_id) "
 					+ "values(se_name.nextval,?,?,?,?,?)";
 			Jdbcpst.preparestmt(sql, user, address, pass, mobile, mail);
@@ -29,17 +28,16 @@ public class UserProfileDaoImpl implements UserProfileDao {
 				rs.next();
 				id = rs.getInt("user_id");
 			}
-			return id;
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
-			return 0;
 		}
+		return id;
 
 	}
 
 	// LOGIN
 	public boolean Login(String username, String pass) {
-		try (Connection con = databaseconnection.connect(); Statement stmt = con.createStatement();) {
+		try (Connection con = Databaseconnection.connect(); Statement stmt = con.createStatement();) {
 			String sql = "select user_name,password from usersdata where user_name = '" + username
 					+ "' and password = '" + pass + "'";
 			try (ResultSet rs1 = stmt.executeQuery(sql);) {
@@ -47,17 +45,17 @@ public class UserProfileDaoImpl implements UserProfileDao {
 					return true;
 				}
 			}
-			return false;
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
-			return false;
 		}
+		return false;
+
 	}
 
 	// VIEW PRODUCTS
 	public ArrayList<UserDisplay> ViewProducts(String a) {
 		ArrayList<UserDisplay> products = new ArrayList<UserDisplay>();
-		try (Connection con = databaseconnection.connect(); Statement stmt = con.createStatement();) {
+		try (Connection con = Databaseconnection.connect(); Statement stmt = con.createStatement();) {
 			String sql = "select p.*,pr.review,pr.rating  from products p,proreview pr where p.product_id= pr.product_id "
 					+ a;
 			try (ResultSet rs = stmt.executeQuery(sql);) {
@@ -76,12 +74,12 @@ public class UserProfileDaoImpl implements UserProfileDao {
 					products.add(ap);
 				}
 			}
-			return products;
 
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
-			return null;
 		}
+		return products;
+
 	}
 
 	// PLACE ORDER
@@ -89,28 +87,28 @@ public class UserProfileDaoImpl implements UserProfileDao {
 		try {
 			AdminProfileDaoImpl obj = new AdminProfileDaoImpl();
 			obj.createOrder(a, username, type);
-			return a;
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
-			return null;
 		}
+		return a;
+
 	}
 
 	// VIEW ORDERSUMMARY
-	public ArrayList<ordersummary> ViewOrder(int userid) {
-		ArrayList<ordersummary> productsview = new ArrayList<>();
-		try (Connection con = databaseconnection.connect(); Statement stmt = con.createStatement();) {
+	public ArrayList<Ordersummary> ViewOrder(int userid) {
+		ArrayList<Ordersummary> productsview = new ArrayList<>();
+		try (Connection con = Databaseconnection.connect(); Statement stmt = con.createStatement();) {
 			LocalDate today = LocalDate.now();
 			Jdbcpst.preparestmt("update orderdata set order_status = 'DELIVERED' where to_date('" + today
 					+ "','yyyy-MM-dd') = delivery_date");
-			
+
 			String sql = "select order_id,product_name,manufacturer,no_of_items,price_per_item,total_amount,"
 					+ "order_date,delivery_date,delivery_address,order_status,payment from orderdata o "
 					+ "inner join products p on p.product_id=o.product_id and user_id=" + userid + ""
 					+ "inner join usersdata u on u.user_id=" + userid + "";
 			try (ResultSet rs = stmt.executeQuery(sql);) {
 				while (rs.next()) {
-					ordersummary os = new ordersummary();
+					Ordersummary os = new Ordersummary();
 					os.setOrderid(rs.getInt("order_id"));
 					os.setProductname(rs.getString("product_name"));
 					os.setManufacturer(rs.getString("manufacturer"));
@@ -124,17 +122,16 @@ public class UserProfileDaoImpl implements UserProfileDao {
 					productsview.add(os);
 				}
 			}
-			return productsview;
 
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
-			return null;
 		}
+		return productsview;
 	}
 
 	// CANCELORDER
 	public String Cancelorder(int orderid) {
-		try (Connection con = databaseconnection.connect(); Statement stmt = con.createStatement();) {
+		try (Connection con = Databaseconnection.connect(); Statement stmt = con.createStatement();) {
 			UserProfileDaoImpl obj = new UserProfileDaoImpl();
 			int days = obj.Trackordercancel(orderid);
 			if (days == 0) {
@@ -149,20 +146,19 @@ public class UserProfileDaoImpl implements UserProfileDao {
 					Jdbcpst.preparestmt("update products set status='AVAILABLE'where stock > 0");
 					Jdbcpst.preparestmt(" update products set status='OUTOFSTOCK'where stock <= 0");
 				}
-				return "CANCELLED SUCCESSFULLY";
 			} else {
 				return "YOUR ORDER DISPATCHED !! NOT ABLE TO CANCEL IT";
 			}
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
-			return null;
 		}
+		return "CANCELLED SUCCESSFULLY";
 	}
 
 	// TRACKORDER
 	public String Trackorder(int orderid) {
 		String s = "";
-		try (Connection con = databaseconnection.connect(); Statement stmt = con.createStatement();) {
+		try (Connection con = Databaseconnection.connect(); Statement stmt = con.createStatement();) {
 			String sql = "select order_date from orderdata where order_id=" + orderid;
 			stmt.executeUpdate(sql);
 			try (ResultSet rs = stmt.executeQuery(sql);) {
@@ -182,16 +178,15 @@ public class UserProfileDaoImpl implements UserProfileDao {
 					s = " \n !! DELIVERED !! ";
 				}
 			}
-			return s;
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
-			return null;
 		}
+		return s;
 	}
 
 	// ADD REVIEW
 	public void Review(int orderid, int rating) {
-		try (Connection con = databaseconnection.connect(); Statement stmt = con.createStatement();) {
+		try (Connection con = Databaseconnection.connect(); Statement stmt = con.createStatement();) {
 			String sql4 = "select product_id from orderdata where order_id=" + orderid;
 			try (ResultSet rs1 = stmt.executeQuery(sql4);) {
 				rs1.next();
@@ -241,47 +236,46 @@ public class UserProfileDaoImpl implements UserProfileDao {
 
 	// USERNAME CHECK FOR FORGOT PASSWORD
 	public boolean checkusername(String username) {
-		try (Connection con = databaseconnection.connect(); Statement stmt = con.createStatement();) {
+		try (Connection con = Databaseconnection.connect(); Statement stmt = con.createStatement();) {
 			if (stmt.executeUpdate("select user_name from usersdata where user_name='" + username + "'") != 0) {
 				return true;
 			}
-			return false;
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
-			return false;
 		}
+		return false;
+
 	}
 
 	// MOBILE NO CHECK
 	public boolean checkmobileno(long mobile) {
-		try (Connection con = databaseconnection.connect(); Statement stmt = con.createStatement();) {
+		try (Connection con = Databaseconnection.connect(); Statement stmt = con.createStatement();) {
 			if (stmt.executeUpdate("select phone_no from usersdata where phone_no='" + mobile + "'") == 1) {
 				return false;
 			}
-			return true;
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
-			return false;
 		}
+		return true;
 
 	}
 
 	// CHECK VALID PRODUCT
 	public boolean checkproduct(int product) {
-		try (Connection con = databaseconnection.connect(); Statement stmt = con.createStatement();) {
+		try (Connection con = Databaseconnection.connect(); Statement stmt = con.createStatement();) {
 			if (stmt.executeUpdate("select product_id from products where product_id=" + product) != 1) {
 				return false;
 			}
-			return true;
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
-			return true;
 		}
+		return true;
+
 	}
 
 	// CHECK STOCK
 	public boolean checkstock(int noofitems, int product) {
-		try (Connection con = databaseconnection.connect(); Statement stmt = con.createStatement();) {
+		try (Connection con = Databaseconnection.connect(); Statement stmt = con.createStatement();) {
 			try (ResultSet rs = stmt.executeQuery("select stock from products where product_id =" + product);) {
 				rs.next();
 				int stock = rs.getInt("stock");
@@ -289,131 +283,128 @@ public class UserProfileDaoImpl implements UserProfileDao {
 					return true;
 				}
 			}
-			return false;
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
-			return false;
 
 		}
+		return false;
 	}
 
 	// DISPLAY USERID
 	public int checkuserid(String user) {
-		try (Connection con = databaseconnection.connect(); Statement stmt = con.createStatement();) {
+		try (Connection con = Databaseconnection.connect(); Statement stmt = con.createStatement();) {
 			String sql = "select user_id from usersdata where user_name='" + user + "'";
 			try (ResultSet rs = stmt.executeQuery(sql);) {
-				rs.next();
-				int user1 = rs.getInt("user_id");
-				return user1;
+				if (rs.next()) {
+					int user1 = rs.getInt("user_id");
+					return user1;
+				}
 			}
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
-			return 0;
+
 		}
+		return 0;
 
 	}
 
 	// CHECK ORDERID
 	public boolean checkorderid(int orderid) {
-		try (Connection con = databaseconnection.connect(); Statement stmt = con.createStatement();) {
+		try (Connection con = Databaseconnection.connect(); Statement stmt = con.createStatement();) {
 			if (stmt.executeUpdate("select order_id from orderdata where order_id='" + orderid + "'") == 1) {
 				return true;
 			}
-			return false;
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
-			return false;
 
 		}
+		return false;
+
 	}
 
 	// CHECKID
 	public boolean checkid(int userid) {
-		try (Connection con = databaseconnection.connect(); Statement stmt = con.createStatement();) {
+		try (Connection con = Databaseconnection.connect(); Statement stmt = con.createStatement();) {
 			if (stmt.executeUpdate("select user_id from usersdata where user_id=" + userid) != 0) {
 				return true;
 			}
-			return false;
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
-			return false;
 
 		}
+		return false;
+
 	}
 
 	// CHECK MAIL
 	public boolean checkmail(String mail) {
-		try (Connection con = databaseconnection.connect(); Statement stmt = con.createStatement();) {
+		try (Connection con = Databaseconnection.connect(); Statement stmt = con.createStatement();) {
 			if (stmt.executeUpdate("select mail_id from usersdata where mail_id='" + mail + "'") != 0) {
 				return true;
 			}
-			return false;
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
-			return false;
 
 		}
+		return false;
+
 	}
 
 	// CHECK MAIL FOR ACC CREATION
 	public boolean checkmailcreate(String mail) {
-		try (Connection con = databaseconnection.connect(); Statement stmt = con.createStatement();) {
+		try (Connection con = Databaseconnection.connect(); Statement stmt = con.createStatement();) {
 			if (stmt.executeUpdate("select mail_id from usersdata where mail_id='" + mail + "'") == 0) {
 				return true;
 			}
-			return false;
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
-			return false;
 
 		}
+		return false;
 	}
 
 	// CHECK USERNAME FOR ACC CREATION
 	public boolean checkusernamecreate(String username) {
-		try (Connection con = databaseconnection.connect(); Statement stmt = con.createStatement();) {
+		try (Connection con = Databaseconnection.connect(); Statement stmt = con.createStatement();) {
 			if (stmt.executeUpdate("select user_name from usersdata where user_name='" + username + "'") == 0) {
 				return true;
 			}
-			return false;
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
-			return false;
 
 		}
+		return false;
 	}
 
 	// CHECK MOBILE NO FOR ACC CREATION
 	public boolean checkmobilenocreate(long mobile) {
-		try (Connection con = databaseconnection.connect(); Statement stmt = con.createStatement();) {
+		try (Connection con = Databaseconnection.connect(); Statement stmt = con.createStatement();) {
 			if (stmt.executeUpdate("select phone_no from usersdata where phone_no='" + mobile + "'") == 0) {
 				return true;
 			}
-			return false;
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
-			return false;
 
 		}
+		return false;
 	}
 
 	// CHECK FOR RATING IF ALREADY REVIEWED
 	public boolean checkrating(int id) {
-		try (Connection con = databaseconnection.connect(); Statement stmt = con.createStatement();) {
+		try (Connection con = Databaseconnection.connect(); Statement stmt = con.createStatement();) {
 			if (stmt.executeUpdate("select order_id from review where order_id=" + id) == 0) {
 				return true;
 			}
-			return false;
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
-			return false;
-
 		}
+		return false;
 	}
 
 	// TRACK FOR CAMCEL
 	public int Trackordercancel(int orderid) {
-		try (Connection con = databaseconnection.connect(); Statement stmt = con.createStatement();) {
+		int n = 0;
+		try (Connection con = Databaseconnection.connect(); Statement stmt = con.createStatement();) {
 			String sql = "select order_date from orderdata where order_id=" + orderid;
 			stmt.executeUpdate(sql);
 			try (ResultSet rs = stmt.executeQuery(sql);) {
@@ -422,30 +413,31 @@ public class UserProfileDaoImpl implements UserProfileDao {
 				String local = date.substring(0, 10);
 				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 				LocalDate date1 = LocalDate.parse(local, formatter);
-				int n = Period.between(date1, LocalDate.now()).getDays();
-				return n;
+				n = Period.between(date1, LocalDate.now()).getDays();
 			}
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
-			return 0;
-
 		}
+		return n;
 	}
 
-	public boolean checkmailpass(String mail, String user,String pass) {
-		try (Connection con = databaseconnection.connect(); Statement stmt = con.createStatement();) {
-			String sql="select mail_id from usersdata where user_name='" + user + "'";
-				ResultSet rs=stmt.executeQuery(sql);
-				String mail1=rs.getString("mail_id");
-				if(mail.equals("mail1")) {
-					UserProfileDaoImpl obj=new UserProfileDaoImpl();
+	// MAIL PASSWORD CHANGE
+	public boolean checkmailpass(String mail, String user, String pass) {
+		try (Connection con = Databaseconnection.connect(); Statement stmt = con.createStatement();) {
+			String sql = "select mail_id from usersdata where user_name='" + user + "'";
+			try (ResultSet rs = stmt.executeQuery(sql);) {
+				String mail1 = rs.getString("mail_id");
+				if (mail.equals("mail1")) {
+					UserProfileDaoImpl obj = new UserProfileDaoImpl();
 					obj.Forgotpassword(mail, pass);
+					return true;
 				}
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			LOGGER.error(Errormessage.NO_DATA_FOUND);
 		}
-		
+
 		return false;
 	}
 

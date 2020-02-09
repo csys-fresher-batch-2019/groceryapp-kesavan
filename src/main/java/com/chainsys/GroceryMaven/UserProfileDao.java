@@ -1,4 +1,4 @@
-package com.chainsys.GroceryMaven;
+package com.chainsys.grocerymaven;
 
 import java.util.ArrayList;
 
@@ -14,7 +14,7 @@ public interface UserProfileDao {
 
 	ArrayList<UserProfile> PlaceOrder(ArrayList<?> o, String username, String payment);
 
-	ArrayList<ordersummary> ViewOrder(int userid);
+	ArrayList<Ordersummary> ViewOrder(int userid);
 
 	void Review(int id, int rating);
 
