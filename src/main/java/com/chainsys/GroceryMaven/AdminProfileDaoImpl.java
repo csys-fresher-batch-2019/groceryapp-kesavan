@@ -155,7 +155,6 @@ public class AdminProfileDaoImpl implements AdminProfileDao {
 					try (ResultSet rs1 = pst.executeQuery();) {
 						if (rs1.next()) {
 							int price = rs1.getInt("price_rs");
-							System.out.println(price);
 							int totalBill = price * obj1.getNoOfItems();
 							amount = amount + totalBill;
 						}

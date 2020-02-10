@@ -153,10 +153,11 @@ public class TestUser {
 						test3 = 0;
 					}
 				}
-				AdminProfileDaoImpl obj7 = new AdminProfileDaoImpl();
-				int total = obj7.bill(orderproducts);
-				System.out.println("Bill Amount : " + total);
+			
 				if (orderproducts.size() > 0 && n >= 1) {
+					AdminProfileDaoImpl obj7 = new AdminProfileDaoImpl();
+					int total = obj7.bill(orderproducts);
+					System.out.println("Bill Amount : " + total);
 					System.out.println("Select payment type \n1.COD \n2.DebitCard");
 					int type = sc.nextInt();
 					if (type == 1) {
@@ -165,7 +166,7 @@ public class TestUser {
 						LOGGER.info(" !!! Order Placed Successfully !!! ");
 					} else {
 						String paytype = "CARD";
-						System.out.println("Enter card");
+						System.out.println("Enter card details :");
 						obj.PlaceOrder(orderproducts, username, paytype);
 						LOGGER.info(" !!! Order Placed Successfully !!! ");
 					}
