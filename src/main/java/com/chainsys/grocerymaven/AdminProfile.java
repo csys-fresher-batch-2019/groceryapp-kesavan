@@ -152,12 +152,6 @@ public class AdminProfile {
 		this.products = products;
 	}
 
-	public AdminProfile(String products, int noOfItems) {
-		super();
-		this.products = products;
-		this.noOfItems = noOfItems;
-	}
-
 	public AdminProfile() {
 	}
 
