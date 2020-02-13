@@ -76,6 +76,7 @@ public class UserProfileDaoImpl implements UserProfileDao {
 			}
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
 		}
 		return products;
@@ -83,10 +84,10 @@ public class UserProfileDaoImpl implements UserProfileDao {
 	}
 
 	// PLACE ORDER
-	public ArrayList<UserProfile> PlaceOrder(ArrayList a, String username, String type) {
+	public ArrayList<UserProfile> PlaceOrder(ArrayList a, String username, String type,int transId) {
 		try {
 			AdminProfileDaoImpl obj = new AdminProfileDaoImpl();
-			obj.createOrder(a, username, type);
+			obj.createOrder(a, username, type,transId);
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
 		}
@@ -426,19 +427,29 @@ public class UserProfileDaoImpl implements UserProfileDao {
 		try (Connection con = Databaseconnection.connect(); Statement stmt = con.createStatement();) {
 			String sql = "select mail_id from usersdata where user_name='" + user + "'";
 			try (ResultSet rs = stmt.executeQuery(sql);) {
+				rs.next();
 				String mail1 = rs.getString("mail_id");
-				if (mail.equals("mail1")) {
-					UserProfileDaoImpl obj = new UserProfileDaoImpl();
-					obj.Forgotpassword(mail, pass);
-					return true;
+				System.out.println(mail1);
+				System.out.println(mail);
+				if (mail.equals(mail1)) {
+					try {
+						Jdbcpst.preparestmt("update usersdata set password = ? where mail_id=?", pass, mail);
+						return true;
+					} catch (Exception e) {
+						LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
+					}
+				}else {
+					LOGGER.error(Errormessage.NO_DATA_FOUND);
 				}
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			LOGGER.error(Errormessage.NO_DATA_FOUND);
-		}
 
+		}
 		return false;
+
 	}
+	
 
 }

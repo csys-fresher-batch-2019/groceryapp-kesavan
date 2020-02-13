@@ -1,8 +1,14 @@
 package com.chainsys.grocerymaven;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
+
+import com.chainsys.payment.CreditCard;
 import com.chainsys.util.LoggerGrocery;
+
+import creditcard.PaymentResponse;
 
 public class TestUser {
 
@@ -153,22 +159,43 @@ public class TestUser {
 						test3 = 0;
 					}
 				}
-			
+
 				if (orderproducts.size() > 0 && n >= 1) {
 					AdminProfileDaoImpl obj7 = new AdminProfileDaoImpl();
 					int total = obj7.bill(orderproducts);
 					System.out.println("Bill Amount : " + total);
-					System.out.println("Select payment type \n1.COD \n2.DebitCard");
+					int amount = total + 70;
+					System.out.println("Select payment type \n1.COD \n2.CreditCard\n3.Wallet");
 					int type = sc.nextInt();
 					if (type == 1) {
 						String paytype = "COD";
-						obj.PlaceOrder(orderproducts, username, paytype);
+						int id = 0;
+						obj.PlaceOrder(orderproducts, username, paytype, id);
 						out.info(" !!! Order Placed Successfully !!! ");
-					} else {
+					} else if (type == 2) {
 						String paytype = "CARD";
-						System.out.println("Enter card details :");
-						obj.PlaceOrder(orderproducts, username, paytype);
-						out.info(" !!! Order Placed Successfully !!! ");
+						System.out.println("Enter card number :");
+						long cardnum = sc.nextLong();
+						System.out.println("Enter expiry date :");
+						String date = sc.next();
+						LocalDate exp = LocalDate.parse(date);
+						System.out.println("Enter cvv :");
+						int cvv = sc.nextInt();
+						System.out.println("Enter comments");
+						String comments = sc.next();
+						CreditCard pay = new CreditCard();
+						PaymentResponse payment = pay.cardpayment(cardnum, exp, cvv, amount, comments);
+						int transId = payment.getTransactionId();
+						System.out.println(payment.isStatus());
+						if (payment.isStatus()) {
+							obj.PlaceOrder(orderproducts, username, paytype, transId);
+							out.info(" !!! Order Placed Successfully !!! ");
+						} else {
+							out.info("Transaction failed");
+							continue;
+						}
+					} else {
+						String paytype = "WALLET";
 					}
 				}
 			} else if (choice == 4) {
@@ -258,27 +285,23 @@ public class TestUser {
 		LoggerGrocery out = LoggerGrocery.getInstance();
 		Scanner sc = new Scanner(System.in);
 		UserProfileDaoImpl obj = new UserProfileDaoImpl();
-		if (obj.checkusername(user)) {
-			out.getInput("Enter your MailId");
-			String mail = sc.next();
-			if (obj.checkmail(mail)) {
-				out.getInput("Enter New Password");
-				String a = sc.next();
-				out.getInput("Confirm Password");
-				String b = sc.next();
-				if (a.equals(b)) {
-					obj.Forgotpassword(mail, b);
-					out.info("Password Updated Successfully ");
-					TestUser.logintest();
-				} else {
-					out.info("Password Mismatch !! ");
-				}
+		out.getInput("Enter your MailId");
+		String mail = sc.next();
+		out.getInput("Enter New Password");
+		String a = sc.next();
+		out.getInput("Confirm Password");
+		String b = sc.next();
+		if (a.equals(b)) {
+			if (obj.checkmailpass(mail, user, b)) {
+				out.info("Password Updated Successfully ");
+				TestUser.logintest();
 			} else {
-				out.info("Invalid mailId");
+				out.info("Invalid credentials ");
 			}
 		} else {
-			out.info("Invalid Username");
+			out.info("Password Mismatch !! ");
 		}
+
 		return false;
 	}
 }

@@ -6,7 +6,7 @@ public interface AdminProfileDao {
 
 	void addProducts(AdminProfile[] p);
 
-	void createOrder(ArrayList<UserProfile> o, String user, String pay);
+	void createOrder(ArrayList<UserProfile> o, String user, String pay,int id);
 
 	void updateProducts(int value, int id);
 

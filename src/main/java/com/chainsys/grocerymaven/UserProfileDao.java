@@ -12,7 +12,7 @@ public interface UserProfileDao {
 
 	ArrayList<UserDisplay> ViewProducts(String a);
 
-	ArrayList<UserProfile> PlaceOrder(ArrayList<?> o, String username, String payment);
+	ArrayList<UserProfile> PlaceOrder(ArrayList<?> o, String username, String payment,int Transactionid);
 
 	ArrayList<Ordersummary> ViewOrder(int userid);
 

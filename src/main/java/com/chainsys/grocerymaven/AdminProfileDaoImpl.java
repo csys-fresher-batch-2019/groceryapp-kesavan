@@ -61,7 +61,7 @@ public class AdminProfileDaoImpl implements AdminProfileDao {
 		}
 	}
 
-	public void createOrder(ArrayList<UserProfile> ob, String user, String type) {
+	public void createOrder(ArrayList<UserProfile> ob, String user, String type, int id) {
 
 		String sql2 = "select user_id from usersdata where user_name= '" + user + "'";
 
@@ -87,11 +87,11 @@ public class AdminProfileDaoImpl implements AdminProfileDao {
 							int totalBill = price * obj1.getNoOfItems();
 							String payment = type;
 							stmt.executeUpdate(
-									"insert into orderdata(user_id,order_id,product_id,order_date,delivery_date,no_of_items,price_per_item,order_status,total_amount,payment) values( "
+									"insert into orderdata(user_id,order_id,product_id,order_date,delivery_date,no_of_items,price_per_item,order_status,total_amount,payment,transaction_id) values( "
 											+ userId + ",seq_name.nextval," + productId + ", to_date('" + today
 											+ "','yyyy-MM-dd') , to_date( '" + deliveryDate + "','yyyy-MM-dd'),"
 											+ obj1.getNoOfItems() + "," + price + ", 'ORDERED', " + totalBill + " ,'"
-											+ payment + "')");
+											+ payment + "'," + id + ")");
 							// stmt.executeUpdate(query);
 							Jdbcpst.preparestmt("update products p set p.stock=p.stock- ?  where product_id =?",
 									obj1.getNoOfItems(), productId);
