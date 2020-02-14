@@ -104,7 +104,7 @@ public class UserProfileDaoImpl implements UserProfileDao {
 					+ "','yyyy-MM-dd') = delivery_date");
 
 			String sql = "select order_id,product_name,manufacturer,no_of_items,price_per_item,total_amount,"
-					+ "order_date,delivery_date,delivery_address,order_status,payment from orderdata o "
+					+ "order_date,delivery_date,delivery_address,order_status,payment,transaction_id  from orderdata o "
 					+ "inner join products p on p.product_id=o.product_id and user_id=" + userid + ""
 					+ "inner join usersdata u on u.user_id=" + userid + "";
 			try (ResultSet rs = stmt.executeQuery(sql);) {
@@ -120,6 +120,7 @@ public class UserProfileDaoImpl implements UserProfileDao {
 					os.setDeliveryaddress(rs.getString("delivery_address"));
 					os.setOrderstatus(rs.getString("order_status"));
 					os.setPayment(rs.getString("payment"));
+					os.setTransId(rs.getInt("transaction_id"));
 					productsview.add(os);
 				}
 			}
@@ -146,6 +147,7 @@ public class UserProfileDaoImpl implements UserProfileDao {
 					Jdbcpst.preparestmt("delete from orderdata where order_id= ?", orderid);
 					Jdbcpst.preparestmt("update products set status='AVAILABLE'where stock > 0");
 					Jdbcpst.preparestmt(" update products set status='OUTOFSTOCK'where stock <= 0");
+					
 				}
 			} else {
 				return "YOUR ORDER DISPATCHED !! NOT ABLE TO CANCEL IT";

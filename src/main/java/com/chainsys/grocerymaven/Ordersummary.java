@@ -94,12 +94,23 @@ public class Ordersummary {
 	private String deliveryaddress;
 	private String orderstatus;
 	private String payment;
+	private int transId;
 
+	public int getTransId() {
+		return transId;
+	}
+
+	public void setTransId(int transId) {
+		this.transId = transId;
+	}
+
+	@Override
 	public String toString() {
-		return "ordersummary [orderid=" + orderid + ", productname=" + productname + ", manufacturer=" + manufacturer
+		return "Ordersummary [orderid=" + orderid + ", productname=" + productname + ", manufacturer=" + manufacturer
 				+ ", noofitems=" + noofitems + ", totalamount=" + totalamount + ", orderdate=" + orderdate
 				+ ", deliverydate=" + deliverydate + ", deliveryaddress=" + deliveryaddress + ", orderstatus="
-				+ orderstatus + ", payment=" + payment + "]";
+				+ orderstatus + ", payment=" + payment + ", transId=" + transId + "]";
 	}
+
 
 }

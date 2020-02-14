@@ -2,13 +2,9 @@ package com.chainsys.grocerymaven;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Scanner;
 
-import com.chainsys.payment.CreditCard;
 import com.chainsys.util.LoggerGrocery;
-
-import creditcard.PaymentResponse;
 
 public class TestUser {
 
@@ -183,7 +179,8 @@ public class TestUser {
 						int cvv = sc.nextInt();
 						System.out.println("Enter comments");
 						String comments = sc.next();
-						CreditCard pay = new CreditCard();
+						/*
+						CreditCardAPI pay = new CreditCardAPI();
 						PaymentResponse payment = pay.cardpayment(cardnum, exp, cvv, amount, comments);
 						int transId = payment.getTransactionId();
 						System.out.println(payment.isStatus());
@@ -193,7 +190,7 @@ public class TestUser {
 						} else {
 							out.info("Transaction failed");
 							continue;
-						}
+						}*/
 					} else {
 						String paytype = "WALLET";
 					}
