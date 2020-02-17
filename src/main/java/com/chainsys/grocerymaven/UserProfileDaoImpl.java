@@ -2,6 +2,7 @@ package com.chainsys.grocerymaven;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.Period;
@@ -84,10 +85,10 @@ public class UserProfileDaoImpl implements UserProfileDao {
 	}
 
 	// PLACE ORDER
-	public ArrayList<UserProfile> PlaceOrder(ArrayList a, String username, String type,int transId) {
+	public ArrayList<UserProfile> PlaceOrder(ArrayList a, String username, String type, int transId) {
 		try {
 			AdminProfileDaoImpl obj = new AdminProfileDaoImpl();
-			obj.createOrder(a, username, type,transId);
+			obj.createOrder(a, username, type, transId);
 		} catch (Exception e) {
 			LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
 		}
@@ -147,7 +148,7 @@ public class UserProfileDaoImpl implements UserProfileDao {
 					Jdbcpst.preparestmt("delete from orderdata where order_id= ?", orderid);
 					Jdbcpst.preparestmt("update products set status='AVAILABLE'where stock > 0");
 					Jdbcpst.preparestmt(" update products set status='OUTOFSTOCK'where stock <= 0");
-					
+
 				}
 			} else {
 				return "YOUR ORDER DISPATCHED !! NOT ABLE TO CANCEL IT";
@@ -424,15 +425,17 @@ public class UserProfileDaoImpl implements UserProfileDao {
 		return n;
 	}
 
-	// MAIL PASSWORD CHANGE
+	// CHANGE PASSWORD WITH MAIL CONFIRM
 	public boolean checkmailpass(String mail, String user, String pass) {
 		try (Connection con = Databaseconnection.connect(); Statement stmt = con.createStatement();) {
 			String sql = "select mail_id from usersdata where user_name='" + user + "'";
+			UserProfileDaoImpl obj = new UserProfileDaoImpl();
+			boolean a = obj.checkusername(user);
+			boolean b = obj.checkusername(user);
+
 			try (ResultSet rs = stmt.executeQuery(sql);) {
 				rs.next();
 				String mail1 = rs.getString("mail_id");
-				System.out.println(mail1);
-				System.out.println(mail);
 				if (mail.equals(mail1)) {
 					try {
 						Jdbcpst.preparestmt("update usersdata set password = ? where mail_id=?", pass, mail);
@@ -440,7 +443,7 @@ public class UserProfileDaoImpl implements UserProfileDao {
 					} catch (Exception e) {
 						LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
 					}
-				}else {
+				} else {
 					LOGGER.error(Errormessage.NO_DATA_FOUND);
 				}
 			}
@@ -452,6 +455,29 @@ public class UserProfileDaoImpl implements UserProfileDao {
 		return false;
 
 	}
-	
 
+	// CHECK MAIL FOR CORRESSPONDING USER
+	public boolean checkmailuser(String mail, String user) {
+		try (Connection con = Databaseconnection.connect(); Statement stmt = con.createStatement();) {
+			String sql = "select mail_id from usersdata where user_name='" + user + "'";
+			try (ResultSet rs = stmt.executeQuery(sql);) {
+				rs.next();
+				String maildb = rs.getString("mail_id");
+				if (mail.equals(maildb)) {
+					System.out.println(" try true");
+					return true;
+				} else {
+					System.out.println("try false");
+					return false;
+				}
+			} catch (SQLException e1) {
+				LOGGER.error(Errormessage.INVALID_COLUMN_INDEX);
+
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
 }

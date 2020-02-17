@@ -12,7 +12,7 @@ public interface UserProfileDao {
 
 	ArrayList<UserDisplay> ViewProducts(String a);
 
-	ArrayList<UserProfile> PlaceOrder(ArrayList<?> o, String username, String payment,int Transactionid);
+	ArrayList<UserProfile> PlaceOrder(ArrayList<?> o, String username, String payment, int Transactionid);
 
 	ArrayList<Ordersummary> ViewOrder(int userid);
 
@@ -38,4 +38,16 @@ public interface UserProfileDao {
 
 	boolean checkmail(String mail);
 
+	boolean checkmailpass(String mail, String user, String pass);
+
+	void changeaddress(String username, String address);
+
+	 boolean checkmailuser(String mail,String user);
+
+	// Acc creation
+	boolean checkmailcreate(String mail);
+
+	boolean checkusernamecreate(String username);
+
+	boolean checkmobilenocreate(long mobile);
 }
