@@ -28,12 +28,12 @@ public class AdminService {
 	}
 
 	public ArrayList<AdminProfile> viewProducts() {
-		ArrayList<AdminProfile> pro=obj.viewProducts();
+		ArrayList<AdminProfile> pro = obj.viewProducts();
 		return pro;
 	}
 
 	public int bill(ArrayList<UserProfile> ob) {
-		int amount=obj.bill(ob);
+		int amount = obj.bill(ob);
 		return amount;
 	}
 }
