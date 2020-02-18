@@ -2,9 +2,6 @@ package com.chainsys.grocerymaven;
 
 import java.util.ArrayList;
 
-import org.jdbi.v3.sqlobject.statement.SqlQuery;
-import org.jdbi.v3.sqlobject.statement.SqlUpdate;
-
 public interface AdminProfileDao {
 	
 	void addProducts(AdminProfile[] p);
@@ -15,9 +12,9 @@ public interface AdminProfileDao {
 
 	void updateProducts(int value, int id);
 	
-	@SqlQuery("select * from products")
+	//@SqlQuery("select * from products")
 	ArrayList<AdminProfile> viewProducts();
 	
-	@SqlQuery("select price_rs from products where product_id= ?")
+	//@SqlQuery("select price_rs from products where product_id= ?")
 	int bill(ArrayList<UserProfile> ob);
 }

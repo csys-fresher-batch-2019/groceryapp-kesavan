@@ -43,7 +43,7 @@ public class TestAdmin {
 				obj1.setStock(scan.nextInt());
 				AdminProfile[] p = { obj1 };
 				obj.addProducts(p);
-				break;
+				break;                                                     
 
 			case 2:
 				// UPDATE STOCK

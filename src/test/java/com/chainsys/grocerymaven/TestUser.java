@@ -192,7 +192,8 @@ public class TestUser {
 							continue;
 						}*/
 					} else {
-						String paytype = "WALLET";
+						String paytype = "CITIWALLET";
+						
 					}
 				}
 			} else if (choice == 4) {
