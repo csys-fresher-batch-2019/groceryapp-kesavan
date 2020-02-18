@@ -6,6 +6,9 @@ import java.util.Scanner;
 
 import com.chainsys.util.LoggerGrocery;
 
+import citiipay.implementation.TransactiondaoImpl;
+import citiipay.models.Merchant;
+
 public class TestUser {
 
 	public static <ordersummary> void main(String[] args) throws Exception {
@@ -160,7 +163,7 @@ public class TestUser {
 					AdminProfileDaoImpl obj7 = new AdminProfileDaoImpl();
 					int total = obj7.bill(orderproducts);
 					System.out.println("Bill Amount : " + total);
-					int amount = total + 70;
+					int amount = total + 50;
 					System.out.println("Select payment type \n1.COD \n2.CreditCard\n3.Wallet");
 					int type = sc.nextInt();
 					if (type == 1) {
@@ -180,20 +183,29 @@ public class TestUser {
 						System.out.println("Enter comments");
 						String comments = sc.next();
 						/*
-						CreditCardAPI pay = new CreditCardAPI();
-						PaymentResponse payment = pay.cardpayment(cardnum, exp, cvv, amount, comments);
-						int transId = payment.getTransactionId();
-						System.out.println(payment.isStatus());
-						if (payment.isStatus()) {
-							obj.PlaceOrder(orderproducts, username, paytype, transId);
-							out.info(" !!! Order Placed Successfully !!! ");
-						} else {
-							out.info("Transaction failed");
-							continue;
-						}*/
+						 * CreditCardAPI pay = new CreditCardAPI(); PaymentResponse payment =
+						 * pay.cardpayment(cardnum, exp, cvv, amount, comments); int transId =
+						 * payment.getTransactionId(); System.out.println(payment.isStatus()); if
+						 * (payment.isStatus()) { obj.PlaceOrder(orderproducts, username, paytype,
+						 * transId); out.info(" !!! Order Placed Successfully !!! "); } else {
+						 * out.info("Transaction failed"); continue; }
+						 */
 					} else {
 						String paytype = "CITIWALLET";
-						
+						System.out.println("Enter the Merchant Id:");
+						String merchantId = sc.next();
+						System.out.println("Enter the Mobile Number:");
+						long mobileNo = sc.nextLong();
+						System.out.println("Enter the Transfer Amount");
+						int amount1 = sc.nextInt();
+						TransactiondaoImpl obj1 = new TransactiondaoImpl();
+						Merchant obj2 = new Merchant();
+						obj2 = obj1.payToMerchant(merchantId, mobileNo, amount);
+						if (obj2.getStatus().equals("Transaction Successfull")) {
+							System.out.println(obj2.getTransactionId() + " is your transaction id");
+							obj.PlaceOrder(orderproducts, username, paytype, obj2.getTransactionId());
+
+						}
 					}
 				}
 			} else if (choice == 4) {

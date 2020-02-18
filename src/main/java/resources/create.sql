@@ -48,3 +48,9 @@ product_id number not null,
 rating float not null,
 constraint product_fk foreign key(product_id) references products(product_id)
 );
+
+
+
+
+
+

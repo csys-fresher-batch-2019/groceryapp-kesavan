@@ -52,8 +52,8 @@ public class AdminProfileDaoImpl implements AdminProfileDao {
 		for (AdminProfile obj : u) {
 			try {
 				Jdbcpst.preparestmt(
-						"insert into usersdata(user_id,password,phone_no,user_name,delivery_address,mail_id)  values(  "
-								+ "se_name.nextval,'" + obj.getPassword() + "'," + obj.getPhoneno() + ",'"
+						"insert into usersdata(password,phone_no,user_name,delivery_address,mail_id)  values(  "
+								 + obj.getPassword() + "'," + obj.getPhoneno() + ",'"
 								+ obj.getUsername() + "','" + obj.getDeliveryaddress() + "','" + obj.getMail() + "')");
 			} catch (Exception e) {
 				LOGGER.debug(Errormessage.INVALID_COLUMN_INDEX);
@@ -87,8 +87,8 @@ public class AdminProfileDaoImpl implements AdminProfileDao {
 							int totalBill = price * obj1.getNoOfItems();
 							String payment = type;
 							stmt.executeUpdate(
-									"insert into orderdata(user_id,order_id,product_id,order_date,delivery_date,no_of_items,price_per_item,order_status,total_amount,payment,transaction_id) values( "
-											+ userId + ",seq_name.nextval," + productId + ", to_date('" + today
+									"insert into orderdata(user_id,product_id,order_date,delivery_date,no_of_items,price_per_item,order_status,total_amount,payment,transaction_id) values( "
+											+ userId +"," + productId + ", to_date('" + today
 											+ "','yyyy-MM-dd') , to_date( '" + deliveryDate + "','yyyy-MM-dd'),"
 											+ obj1.getNoOfItems() + "," + price + ", 'ORDERED', " + totalBill + " ,'"
 											+ payment + "'," + id + ")");
@@ -102,6 +102,7 @@ public class AdminProfileDaoImpl implements AdminProfileDao {
 				}
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			LOGGER.debug((Errormessage.INVALID_COLUMN_INDEX));
 		}
 
